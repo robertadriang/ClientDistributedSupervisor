@@ -32,8 +32,6 @@ public class Login {
             Socket socket = new Socket(serverAddress, PORT);
             out = new PrintWriter(socket.getOutputStream(),true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-
         } catch (UnknownHostException e) {
             System.err.println("No server listening... " + e);
         } catch (SocketException e) {
@@ -59,6 +57,7 @@ public class Login {
                 String response = null;
                 try {
                     response = finalIn.readLine();
+                    System.out.println(response);
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
@@ -82,6 +81,7 @@ public class Login {
                 String response = null;
                 try {
                     response = finalIn.readLine();
+                    System.out.println(response);
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }

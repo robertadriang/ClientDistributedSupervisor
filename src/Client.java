@@ -151,6 +151,12 @@ public class Client {
                         commandAndJSON += "add ";
                         commandAndJSON += "{\"name\":\"" + request.substring(10) + "\"}";
                     }
+                    else if(request.startsWith("group get ")){
+                        commandAndJSON+="get ";
+                        if(request.startsWith("group get all")){
+                            commandAndJSON+="all ";
+                        }
+                    }
                     out.println(commandAndJSON);
                 }
                 else {
