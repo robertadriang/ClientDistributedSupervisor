@@ -2,8 +2,16 @@ package Login;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class Login {
+    private static final int PORT = 8101;
+    public static final String serverAddress = "127.0.0.1";
     private  JButton loginButton;
     private  JButton registerButton;
     private  JPanel loginPanel;
@@ -14,6 +22,73 @@ public class Login {
     private  JComboBox userTypeComboBox;
     private  JLabel userLabel;
     private  JLabel userTypeLabel;
+
+    public Login() {
+
+        PrintWriter out = null;
+        BufferedReader in = null;
+
+        try {
+            Socket socket = new Socket(serverAddress, PORT);
+            out = new PrintWriter(socket.getOutputStream(),true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+
+        } catch (UnknownHostException e) {
+            System.err.println("No server listening... " + e);
+        } catch (SocketException e) {
+            System.err.println("Socket exception. Probably timeout LOL");
+        } catch (IOException e){
+            System.err.println("IO Exception...");
+        }
+
+        PrintWriter finalOut = out;
+        BufferedReader finalIn = in;
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String username = userTextField.getText();
+                String userType = (String)userTypeComboBox.getSelectedItem();
+                String commandAndJSON = "";
+                if(userType.equals("Professor"))
+                    commandAndJSON  = "register1 {\"username\":\"" + username + "\"}";
+                else if(userType.equals("Student"))
+                    commandAndJSON  = "register2 {\"username\":\"" + username + "\"}";
+                finalOut.println(commandAndJSON);
+
+                String response = null;
+                try {
+                    response = finalIn.readLine();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                JOptionPane.showMessageDialog(null,response);
+            }
+        });
+
+
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String username = userTextField.getText();
+                String userType = (String)userTypeComboBox.getSelectedItem();
+                String commandAndJSON = "";
+                if(userType.equals("Professor"))
+                    commandAndJSON  = "login1 {\"username\":\"" + username + "\"}";
+                else if(userType.equals("Student"))
+                    commandAndJSON  = "login2 {\"username\":\"" + username + "\"}";
+                finalOut.println(commandAndJSON);
+
+                String response = null;
+                try {
+                    response = finalIn.readLine();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                JOptionPane.showMessageDialog(null,response);
+            }
+        });
+    }
 
     private void initFrame(JFrame frame)
     {
