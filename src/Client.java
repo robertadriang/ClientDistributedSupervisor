@@ -52,6 +52,13 @@ public class Client {
                         String grade=auxSplit[auxSplit.length-1];
                         comandAndJSON+="{\"task\":\""+taskName+"\",\"student\":\""+studentName+"\",\"grade\":"+grade+"}";
                     }
+                    else if (request.startsWith("grade get")){
+                        comandAndJSON+="get ";
+                        if(request.startsWith("grade get all")){
+                            comandAndJSON+="all ";
+                            comandAndJSON+="{\"name\":\""+request.substring(14)+"\"}";
+                        }
+                    }
                     out.println(comandAndJSON);
                 }
                 else if(request.startsWith("group-student")){
@@ -66,6 +73,13 @@ public class Client {
                         String groupName=auxSplit[auxSplit.length-3];
                         String studentName=auxSplit[auxSplit.length-1];
                         commandAndJSON+="{\"groupname\":\""+groupName+"\",\"student\":\""+studentName+"\"}";
+                    }
+                    else if(request.startsWith("group-student get")){
+                        commandAndJSON+="get ";
+                        if(request.startsWith("group-student get all")){
+                            commandAndJSON+="all ";
+                            commandAndJSON+="{\"name\":\""+request.substring(22)+"\"}";
+                        }
                     }
                     out.println(commandAndJSON);
                 }
@@ -92,6 +106,13 @@ public class Client {
                         String groupName=auxSplit[auxSplit.length-3];
                         String taskName=auxSplit[auxSplit.length-1];
                         commandAndJSON+="{\"groupname\":\""+groupName+"\",\"task\":\""+taskName+"\"}";
+                    }
+                    else if(request.startsWith("group-task get")){
+                        commandAndJSON+="get ";
+                        if(request.startsWith("group-task get all")){
+                            commandAndJSON+="all ";
+                            commandAndJSON+="{\"name\":\""+request.substring(19)+"\"}";
+                        }
                     }
                     out.println(commandAndJSON);
                 }
