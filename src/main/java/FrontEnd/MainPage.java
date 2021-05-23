@@ -28,7 +28,7 @@ public class MainPage {
     private JLabel groupLabel;
     private JTable gradeTable;
     private JButton addStudentButton;
-    private JPanel contentPanel;
+    private JLabel tableTitleLabel;
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
@@ -90,6 +90,7 @@ public class MainPage {
 
     private void createTableData(String group) {
         String commandAndJson = "group-student get all {\"name\":\"" + group + "\"}";
+        this.tableTitleLabel.setText("Grade Table - " + group);
         out.println(commandAndJson);
         String response = "";
         try {
