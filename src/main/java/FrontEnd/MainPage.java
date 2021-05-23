@@ -80,7 +80,7 @@ public class MainPage {
 
 
                 String[] tableHeader = new String[tasks.length + 1];
-                tableHeader[0] = "Students";
+                tableHeader[0] = "Students \\ Tasks";
                 for (int i = 0; i < tasks.length; i++)
                     tableHeader[i + 1] = tasks[i];
 
@@ -154,21 +154,32 @@ public class MainPage {
             @Override
             public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
                 String commandAndJson = "";
-                if (tableData[rowIndex][columnIndex] != null) {
-                    commandAndJson = "grade update ";
-                } else {
-                    commandAndJson = "grade add ";
-                }
-                tableData[rowIndex][columnIndex] = aValue;
-                commandAndJson += "{\"task\":\"" + tableHeader[columnIndex] + "\",\"student\":\"" + tableData[rowIndex][0] + "\",\"grade\":" + aValue + "}";
-                out.println(commandAndJson);
                 String response = "";
+
                 try {
-                    response = in.readLine();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    double aux = Double.parseDouble((String) aValue);
+                    if (tableData[rowIndex][columnIndex] != null) {
+                        commandAndJson = "grade update ";
+                    } else {
+                        commandAndJson = "grade add ";
+                    }
+                    tableData[rowIndex][columnIndex] = aValue;
+                    commandAndJson += "{\"task\":\"" + tableHeader[columnIndex] + "\",\"student\":\"" + tableData[rowIndex][0] + "\",\"grade\":" + aValue + "}";
+                    out.println(commandAndJson);
+
+                    try {
+                        response = in.readLine();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    JOptionPane.showMessageDialog(null, response);
                 }
-                JOptionPane.showMessageDialog(null, response);
+                catch (NumberFormatException e)
+                {
+                    System.err.println("Invalid input! Must be a number!");
+                    JOptionPane.showMessageDialog(null, "Invalid input! Must be a number!");
+                }
+
             }
 
             @Override
