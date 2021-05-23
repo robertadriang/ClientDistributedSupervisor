@@ -59,6 +59,14 @@ public class Client {
                             comandAndJSON+="{\"name\":\""+request.substring(14)+"\"}";
                         }
                     }
+                    else if(request.startsWith("grade update")){
+                        comandAndJSON+="update ";
+                        var auxSplit=request.split("\"");
+                        String taskName=auxSplit[auxSplit.length-5];
+                        String studentName=auxSplit[auxSplit.length-3];
+                        String grade=auxSplit[auxSplit.length-1];
+                        comandAndJSON+="{\"task\":\""+taskName+"\",\"student\":\""+studentName+"\",\"grade\":"+grade+"}";
+                    }
                     out.println(comandAndJSON);
                 }
                 else if(request.startsWith("group-student")){
