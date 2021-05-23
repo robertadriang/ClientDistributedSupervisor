@@ -89,7 +89,7 @@ public class MainPage {
                     tableData[i][0] = students[i];
 
                 for (int j = 0; j < tasks.length; j++) {
-                    for (int i = 0; i < students.length; i++)
+                    for (int i = 0; i < gradeList[j].getGrade().size(); i++)
                         tableData[i][j+1] = gradeList[j].getGrade().get(i);
                 }
 
