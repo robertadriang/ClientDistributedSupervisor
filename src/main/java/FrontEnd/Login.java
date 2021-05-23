@@ -1,9 +1,11 @@
-package Login;
+package FrontEnd;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
@@ -11,7 +13,9 @@ import java.net.UnknownHostException;
 
 public class Login {
     private static final int PORT = 8101;
-    public static final String serverAddress = "127.0.0.1";
+    private static final String serverAddress = "127.0.0.1";
+    private Socket socket;
+    private JFrame loginFrame;
     private  JButton loginButton;
     private  JButton registerButton;
     private  JPanel loginPanel;
@@ -25,11 +29,13 @@ public class Login {
 
     public Login() {
 
+        this.loginFrame = new JFrame("FrontEnd");
+
         PrintWriter out = null;
         BufferedReader in = null;
 
         try {
-            Socket socket = new Socket(serverAddress, PORT);
+            this.socket = new Socket(serverAddress, PORT);
             out = new PrintWriter(socket.getOutputStream(),true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (UnknownHostException e) {
@@ -61,6 +67,7 @@ public class Login {
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
+
                 JOptionPane.showMessageDialog(null,response);
             }
         });
@@ -85,31 +92,73 @@ public class Login {
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
-                JOptionPane.showMessageDialog(null,response);
+
+                if(response.contains("logged in!"))
+                    login();
+                else
+                    JOptionPane.showMessageDialog(null,response);
+            }
+        });
+
+        userTextField.addKeyListener(new KeyAdapter() {         //Added login on ENTER key
+            @Override
+            public void keyPressed(KeyEvent e) {
+                super.keyPressed(e);
+                if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+                    String username = userTextField.getText();
+                    String userType = (String)userTypeComboBox.getSelectedItem();
+                    String commandAndJSON = "";
+                    if(userType.equals("Professor"))
+                        commandAndJSON  = "login1 {\"username\":\"" + username + "\"}";
+                    else if(userType.equals("Student"))
+                        commandAndJSON  = "login2 {\"username\":\"" + username + "\"}";
+                    finalOut.println(commandAndJSON);
+
+                    String response = null;
+                    try {
+                        response = finalIn.readLine();
+                        System.out.println(response);
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+
+                    if(response.contains("logged in!"))
+                        login();
+                    else
+                        JOptionPane.showMessageDialog(null,response);
+                }
             }
         });
     }
 
-    private void initFrame(JFrame frame)
+    private void login()
     {
-        frame.setContentPane(new Login().loginPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
+        this.loginFrame.setVisible(false);
+        MainPage mainPage = new MainPage();
+        mainPage.showMainPage(this.socket);
+
     }
 
-    private void setFrameLocation(JFrame frame)
+    private void initFrame(Login login)
+    {
+        this.loginFrame.setContentPane(login.loginPanel);
+        this.loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.loginFrame.pack();
+    }
+
+    private void setFrameLocation()
     {
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
-        int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
-        frame.setLocation(x, y);
-        frame.setVisible(true);
+        int x = (int) ((dimension.getWidth() - this.loginFrame.getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - this.loginFrame.getHeight()) / 2);
+        this.loginFrame.setLocation(x, y);
+        this.loginFrame.setVisible(true);
     }
 
     public static void main(String[] args) {
-        JFrame loginFrame = new JFrame("Login");
+
         Login login = new Login();
-        login.initFrame(loginFrame);
-        login.setFrameLocation(loginFrame);
+        login.initFrame(login);
+        login.setFrameLocation();
     }
 }
