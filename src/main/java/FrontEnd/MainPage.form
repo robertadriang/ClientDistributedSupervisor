@@ -58,6 +58,7 @@
             <properties>
               <font name="Consolas" size="16" style="0"/>
               <intercellSpacing width="25" height="25"/>
+              <name value=""/>
               <rowHeight value="50"/>
               <rowMargin value="25"/>
             </properties>

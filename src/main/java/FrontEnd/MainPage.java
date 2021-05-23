@@ -81,16 +81,29 @@ public class MainPage {
 
                 String[] tableHeader = new String[tasks.length + 1];
                 tableHeader[0] = "Students";
-                System.arraycopy(tasks, 0, tableHeader, 1, tasks.length);
+                for (int i = 0; i < tasks.length; i++)
+                    tableHeader[i + 1] = tasks[i];
+
 
                 Object[][] tableData = new Object[students.length][tableHeader.length];
 
                 for (int i = 0; i < students.length; i++)
                     tableData[i][0] = students[i];
 
-                for (int j = 0; j < tasks.length; j++) {
-                    for (int i = 0; i < gradeList[j].getGrade().size(); i++)
-                        tableData[i][j+1] = gradeList[j].getGrade().get(i);
+
+                for (int t = 0; t < gradeList.length; t++) {
+                    int j = 0;
+                    boolean ok = false;
+                    for (j = 0; j < tasks.length; j++)
+                        if (gradeList[t].getTask().equals(tasks[j])) {
+                            ok = true;
+                            break;
+                        }
+
+                    if (ok) {
+                        for (int i = 0; i < gradeList[t].getGrade().size(); i++)
+                            tableData[i][j + 1] = gradeList[t].getGrade().get(i);
+                    }
                 }
 
                 for (int i = 0; i < students.length; i++) {
@@ -98,14 +111,13 @@ public class MainPage {
                         System.out.print(tableData[i][j] + " ");
                     System.out.println();
                 }
-                createTableData(tableHeader,tableData);
+                createTableData(tableHeader, tableData);
 
             }
         });
     }
 
-    private void createTableData(String[] tableHeader, Object[][] tableData)
-    {
+    private void createTableData(String[] tableHeader, Object[][] tableData) {
         TableModel tableModel = new TableModel() {
             @Override
             public int getRowCount() {
@@ -124,12 +136,14 @@ public class MainPage {
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                return getValueAt(0,columnIndex).getClass();
+                return String.class;
             }
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return false;
+                if (columnIndex > 0)
+                    return true;
+                else return false;
             }
 
             @Override
@@ -139,7 +153,22 @@ public class MainPage {
 
             @Override
             public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-
+                String commandAndJson = "";
+                if (tableData[rowIndex][columnIndex] != null) {
+                    commandAndJson = "grade update ";
+                } else {
+                    commandAndJson = "grade add ";
+                }
+                tableData[rowIndex][columnIndex] = aValue;
+                commandAndJson += "{\"task\":\"" + tableHeader[columnIndex] + "\",\"student\":\"" + tableData[rowIndex][0] + "\",\"grade\":" + aValue + "}";
+                out.println(commandAndJson);
+                String response = "";
+                try {
+                    response = in.readLine();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                JOptionPane.showMessageDialog(null, response);
             }
 
             @Override
@@ -153,6 +182,8 @@ public class MainPage {
             }
         };
         this.gradeTable.setModel(tableModel);
+        this.gradeTable.getTableHeader().setFont(new Font("consolas", Font.BOLD,16));
+        this.gradeTable.getTableHeader().setPreferredSize(new Dimension(-1,30));
     }
 
     private void initFrame(JFrame frame, MainPage MainPage) {
