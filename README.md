@@ -38,4 +38,6 @@ The top part of the Main Page is a JPanel, named configPanel, containing:
   - addTaskButton - a JButton for adding a new task to the current group; when this button is pressed, a new dialog window will pop on the screen where the user can write the name of the a new OR existing task (i.e. a task that already exists in the database, but is not assigned the current group yet); also, a request to the Back-End is sent for saving the new task and assigning it to the current group; 
   - deleteTaskButton - a JButton for removing a task from the current group; when this button is pressed, a new dialog window will pop on the screen where the user can choose from the from a dropdown menu containing the tasks assigned to the current group; the task will be removed from the group, but it will still be available in the database;
 
+When any of the buttons above is pressed, the changes are also made to the table on the screen;
+The table is fully interactive, meaning that any value for a grade can be edited from within the table cell;
 
