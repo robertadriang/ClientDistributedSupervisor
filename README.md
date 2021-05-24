@@ -41,3 +41,5 @@ The top part of the Main Page is a JPanel, named configPanel, containing:
 When any of the buttons above is pressed, the changes are also made to the table on the screen;
 The table is fully interactive, meaning that any value for a grade can be edited from within the table cell;
 
+All of the operations above are available for a professor user. If a student logs in, he/she can only see the tables, but can't make any modification to it.
+
