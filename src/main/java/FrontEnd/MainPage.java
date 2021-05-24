@@ -30,6 +30,12 @@ public class MainPage {
     private JButton addStudentButton;
     private JLabel tableTitleLabel;
     private JButton addTaskButton;
+    private JButton deleteTaskButton;
+    private JPanel taskPanel;
+    private JPanel studentPanel;
+    private JButton deleteStudentButton;
+    private JPanel groupPanel;
+    private JButton addGroupButton;
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
@@ -58,10 +64,152 @@ public class MainPage {
                         null,
                         ""
                 );
-                if(newStudentName != null && !(newStudentName.isEmpty()))
+                if (newStudentName != null && !(newStudentName.isEmpty()))
                     addNewStudent(newStudentName);
             }
         });
+
+        addTaskButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String newTaskName = "";
+                newTaskName = (String) (String) JOptionPane.showInputDialog(
+                        null,
+                        "Task name: ",
+                        "Add Task",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        null,
+                        ""
+                );
+                if (newTaskName != null && !(newTaskName.isEmpty()))
+                    addNewTask(newTaskName);
+            }
+        });
+
+        deleteTaskButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String[] availableTasks;
+                String group = (String) groupComboBox.getSelectedItem();
+                String commandAndJSON = "group-task get all " + "{\"name\":\"" + group + "\"}";
+                out.println(commandAndJSON);
+                String response = "";
+                try {
+                    response = in.readLine();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                response = response.substring(response.indexOf("["));
+                availableTasks = gson.fromJson(response, String[].class);
+
+                String chosenTask = "";
+                chosenTask = (String) JOptionPane.showInputDialog(
+                        null,
+                        "Task name: ",
+                        "Delete Task",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        availableTasks,
+                        ""
+                );
+                if (chosenTask != null && !(chosenTask.isEmpty()))
+                    deleteTask(chosenTask, group);
+            }
+        });
+
+        deleteStudentButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String[] availableStudents;
+                String group = (String) groupComboBox.getSelectedItem();
+                String commandAndJSON = "group-student get all " + "{\"name\":\"" + group + "\"}";
+                out.println(commandAndJSON);
+                String response = "";
+                try {
+                    response = in.readLine();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                response = response.substring(response.indexOf("["));
+                availableStudents = gson.fromJson(response, String[].class);
+
+                String chosenStudent = "";
+                chosenStudent = (String) JOptionPane.showInputDialog(
+                        null,
+                        "Student name: ",
+                        "Delete Student",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        availableStudents,
+                        ""
+                );
+                if (chosenStudent != null && !(chosenStudent.isEmpty()))
+                    deleteStudent(chosenStudent, group);
+
+            }
+        });
+        addGroupButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String newGroupName = "";
+                newGroupName = (String) (String) JOptionPane.showInputDialog(
+                        null,
+                        "Group name: ",
+                        "Add Group",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        null,
+                        ""
+                );
+                if (newGroupName != null && !(newGroupName.isEmpty()))
+                    addNewGroup(newGroupName);
+            }
+        });
+    }
+
+    private void addNewGroup(String newGroupName) {
+        String commandAndJSON = "group add " + "{\"name\":\"" + newGroupName + "\"}";
+        out.println(commandAndJSON);
+        String response = "";
+        try {
+            response = in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (response.contains("group created!")) {
+            createGroupComboBox();
+            String group = (String) groupComboBox.getSelectedItem();
+            createTableData(group);
+        }
+        else
+            JOptionPane.showMessageDialog(null,response);
+    }
+
+    private void addNewTask(String newTaskName) {
+        String group = (String) groupComboBox.getSelectedItem();
+        String commandAndJSON = "task add " + "{\"name\":\"" + newTaskName + "\"}";
+        out.println(commandAndJSON);
+        String createTaskResponse = "";
+        try {
+            createTaskResponse = in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        commandAndJSON = "group-task add " + "{\"groupname\":\"" + group + "\",\"task\":\"" + newTaskName + "\"}";
+        out.println(commandAndJSON);
+        String groupTaskResponse = "";
+        try {
+            groupTaskResponse = in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (groupTaskResponse.contains("group-task created!"))
+            createTableData(group);
+        else
+            JOptionPane.showMessageDialog(null, "Task \"" + newTaskName + "\" already assigned to group \"" + group + "\"!");
     }
 
     private void addNewStudent(String newStudentName) {
@@ -88,7 +236,36 @@ public class MainPage {
             createTableData(group);
         else
             JOptionPane.showMessageDialog(null, "Student \"" + newStudentName + "\" already assigned to group \"" + group + "\"!");
+    }
 
+    private void deleteTask(String chosenTask, String group) {
+        String commandAndJSON = "group-task delete " + "{\"groupname\":\"" + group + "\",\"task\":\"" + chosenTask + "\"}";
+        out.println(commandAndJSON);
+        String response = "";
+        try {
+            response = in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (response.contains("success!"))
+            createTableData(group);
+        else
+            JOptionPane.showMessageDialog(null, response);
+    }
+
+    private void deleteStudent(String chosenStudent, String group) {
+        String commandAndJSON = "group-student delete " + "{\"groupname\":\"" + group + "\",\"student\":\"" + chosenStudent + "\"}";
+        out.println(commandAndJSON);
+        String response = "";
+        try {
+            response = in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (response.contains("success!"))
+            createTableData(group);
+        else
+            JOptionPane.showMessageDialog(null, response);
     }
 
     private void createTableData(String group) {
@@ -141,7 +318,7 @@ public class MainPage {
         for (int i = 0; i < students.length; i++)
             tableData[i][0] = students[i];
 
-        if(response.contains("["))      //if there are any grades
+        if (response.contains("["))      //if there are any grades
         {
             response = response.substring(response.indexOf("["));
             GradeCustomObject[] gradeList = gson.fromJson(response, GradeCustomObject[].class);
@@ -231,7 +408,6 @@ public class MainPage {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    JOptionPane.showMessageDialog(null, response);
                 } catch (NumberFormatException e) {
                     System.err.println("Invalid input! Must be a number!");
                     JOptionPane.showMessageDialog(null, "Invalid input! Must be a number!");
@@ -258,8 +434,14 @@ public class MainPage {
     private void initFrame(JFrame frame, MainPage MainPage) {
         frame.setContentPane(MainPage.mainPagePanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        createGroupComboBox();
+        String group = (String) groupComboBox.getSelectedItem();
+        createTableData(group);
+        frame.pack();
+    }
 
-        String response = null;
+    private void createGroupComboBox() {
+        String response = "";
         String request = "group get all";
         out.println(request);
         try {
@@ -280,7 +462,6 @@ public class MainPage {
 
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(groupNames);
         this.groupComboBox.setModel(model);
-        frame.pack();
     }
 
     private void setFrameLocation(JFrame frame) {
