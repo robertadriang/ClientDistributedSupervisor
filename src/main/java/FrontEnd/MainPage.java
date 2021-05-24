@@ -29,6 +29,7 @@ public class MainPage {
     private JTable gradeTable;
     private JButton addStudentButton;
     private JLabel tableTitleLabel;
+    private JButton addTaskButton;
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
@@ -47,7 +48,8 @@ public class MainPage {
         addStudentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String newStudentName = (String) JOptionPane.showInputDialog(
+                String newStudentName = "";
+                newStudentName = (String) JOptionPane.showInputDialog(
                         null,
                         "Student name: ",
                         "Add Student",
@@ -56,7 +58,7 @@ public class MainPage {
                         null,
                         ""
                 );
-                if(!newStudentName.isEmpty())
+                if(newStudentName != null && !(newStudentName.isEmpty()))
                     addNewStudent(newStudentName);
             }
         });
