@@ -129,6 +129,13 @@ public class Client {
                             commandAndJSON+="{\"name\":\""+request.substring(19)+"\"}";
                         }
                     }
+                    else if(request.startsWith("group-task delete")){
+                        commandAndJSON+="delete ";
+                        var auxSplit=request.split("\"");
+                        String groupName=auxSplit[auxSplit.length-3];
+                        String taskName=auxSplit[auxSplit.length-1];
+                        commandAndJSON+="{\"groupname\":\""+groupName+"\",\"task\":\""+taskName+"\"}";
+                    }
                     out.println(commandAndJSON);
                 }
                 else if (request.startsWith("login")) {
