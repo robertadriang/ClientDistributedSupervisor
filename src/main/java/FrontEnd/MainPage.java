@@ -126,44 +126,44 @@ public class MainPage {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
-        response = response.substring(response.indexOf("["));
-        GradeCustomObject[] gradeList = gson.fromJson(response, GradeCustomObject[].class);
-
 
         String[] tableHeader = new String[tasks.length + 1];
         tableHeader[0] = "Students \\ Tasks";
         for (int i = 0; i < tasks.length; i++)
             tableHeader[i + 1] = tasks[i];
 
-
         Object[][] tableData = new Object[students.length][tableHeader.length];
 
         for (int i = 0; i < students.length; i++)
             tableData[i][0] = students[i];
 
+        if(response.contains("["))      //if there are any grades
+        {
+            response = response.substring(response.indexOf("["));
+            GradeCustomObject[] gradeList = gson.fromJson(response, GradeCustomObject[].class);
 
-        for (int t = 0; t < gradeList.length; t++) {
-            int j = 0;
-            boolean foundTask = false;
-            for (j = 0; j < tasks.length; j++)
-                if (gradeList[t].getTask().equals(tasks[j])) {
-                    foundTask = true;
-                    break;
-                }
+            for (int t = 0; t < gradeList.length; t++) {
+                int j = 0;
+                boolean foundTask = false;
+                for (j = 0; j < tasks.length; j++)
+                    if (gradeList[t].getTask().equals(tasks[j])) {
+                        foundTask = true;
+                        break;
+                    }
 
-            if (foundTask) {
+                if (foundTask) {
 
-                for (int k = 0; k < gradeList[t].getStudent().size(); k++) {
-                    int i=0;
-                    boolean foundStudent = false;
-                    for(i=0;i< students.length;i++)
-                        if(gradeList[t].getStudent().get(k).equals(students[i]))
-                        {
-                            foundStudent = true;
-                            break;
-                        }
-                    if(foundStudent)
-                        tableData[i][j+1] = gradeList[t].getGrade().get(k);
+                    for (int k = 0; k < gradeList[t].getStudent().size(); k++) {
+                        int i = 0;
+                        boolean foundStudent = false;
+                        for (i = 0; i < students.length; i++)
+                            if (gradeList[t].getStudent().get(k).equals(students[i])) {
+                                foundStudent = true;
+                                break;
+                            }
+                        if (foundStudent)
+                            tableData[i][j + 1] = gradeList[t].getGrade().get(k);
+                    }
                 }
             }
         }
