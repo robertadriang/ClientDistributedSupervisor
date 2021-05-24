@@ -172,6 +172,7 @@
         <properties>
           <background color="-1"/>
           <foreground color="-1"/>
+          <horizontalScrollBarPolicy value="30"/>
           <opaque value="false"/>
           <visible value="true"/>
         </properties>
@@ -184,9 +185,11 @@
           <component id="4d64a" class="javax.swing.JTable" binding="gradeTable">
             <constraints/>
             <properties>
+              <autoResizeMode value="3"/>
               <font name="Consolas" size="16" style="0"/>
               <intercellSpacing width="25" height="25"/>
               <name value=""/>
+              <preferredScrollableViewportSize width="1000" height="400"/>
               <rowHeight value="50"/>
               <rowMargin value="25"/>
             </properties>
