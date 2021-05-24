@@ -26,28 +26,13 @@ public class Login {
     private  JComboBox userTypeComboBox;
     private  JLabel userLabel;
     private  JLabel userTypeLabel;
+    private  PrintWriter out;
+    private  BufferedReader in;
 
     public Login() {
 
         this.loginFrame = new JFrame("FrontEnd");
-
-        PrintWriter out = null;
-        BufferedReader in = null;
-
-        try {
-            this.socket = new Socket(serverAddress, PORT);
-            out = new PrintWriter(socket.getOutputStream(),true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        } catch (UnknownHostException e) {
-            System.err.println("No server listening... " + e);
-        } catch (SocketException e) {
-            System.err.println("Socket exception. Probably timeout LOL");
-        } catch (IOException e){
-            System.err.println("IO Exception...");
-        }
-
-        PrintWriter finalOut = out;
-        BufferedReader finalIn = in;
+        connect();
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -58,11 +43,11 @@ public class Login {
                     commandAndJSON  = "register1 {\"username\":\"" + username + "\"}";
                 else if(userType.equals("Student"))
                     commandAndJSON  = "register2 {\"username\":\"" + username + "\"}";
-                finalOut.println(commandAndJSON);
+                out.println(commandAndJSON);
 
                 String response = null;
                 try {
-                    response = finalIn.readLine();
+                    response = in.readLine();
                     System.out.println(response);
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
@@ -71,7 +56,6 @@ public class Login {
                 JOptionPane.showMessageDialog(null,response);
             }
         });
-
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -83,11 +67,11 @@ public class Login {
                     commandAndJSON  = "login1 {\"username\":\"" + username + "\"}";
                 else if(userType.equals("Student"))
                     commandAndJSON  = "login2 {\"username\":\"" + username + "\"}";
-                finalOut.println(commandAndJSON);
+                out.println(commandAndJSON);
 
                 String response = null;
                 try {
-                    response = finalIn.readLine();
+                    response = in.readLine();
                     System.out.println(response);
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
@@ -112,11 +96,11 @@ public class Login {
                         commandAndJSON  = "login1 {\"username\":\"" + username + "\"}";
                     else if(userType.equals("Student"))
                         commandAndJSON  = "login2 {\"username\":\"" + username + "\"}";
-                    finalOut.println(commandAndJSON);
+                    out.println(commandAndJSON);
 
                     String response = null;
                     try {
-                        response = finalIn.readLine();
+                        response = in.readLine();
                         System.out.println(response);
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
@@ -129,6 +113,21 @@ public class Login {
                 }
             }
         });
+    }
+
+    private void connect()
+    {
+        try {
+            this.socket = new Socket(serverAddress, PORT);
+            out = new PrintWriter(socket.getOutputStream(),true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        } catch (UnknownHostException e) {
+            System.err.println("No server listening... " + e);
+        } catch (SocketException e) {
+            System.err.println("Socket exception. Probably timeout LOL");
+        } catch (IOException e){
+            System.err.println("IO Exception...");
+        }
     }
 
     private void login()
@@ -156,7 +155,6 @@ public class Login {
     }
 
     public static void main(String[] args) {
-
         Login login = new Login();
         login.initFrame(login);
         login.setFrameLocation();
