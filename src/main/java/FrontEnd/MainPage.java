@@ -40,6 +40,7 @@ public class MainPage {
     private PrintWriter out;
     private BufferedReader in;
     private Gson gson;
+    private int userTypeVal;
 
 
     public MainPage() {
@@ -377,7 +378,7 @@ public class MainPage {
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                if (columnIndex > 0)
+                if (columnIndex > 0 && userTypeVal==1)
                     return true;
                 else return false;
             }
@@ -389,28 +390,29 @@ public class MainPage {
 
             @Override
             public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-                String commandAndJson = "";
-                String response = "";
-
-                try {
-                    double aux = Double.parseDouble((String) aValue);
-                    if (tableData[rowIndex][columnIndex] != null) {
-                        commandAndJson = "grade update ";
-                    } else {
-                        commandAndJson = "grade add ";
-                    }
-                    tableData[rowIndex][columnIndex] = aux;
-                    commandAndJson += "{\"task\":\"" + tableHeader[columnIndex] + "\",\"student\":\"" + tableData[rowIndex][0] + "\",\"grade\":" + aValue + "}";
-                    out.println(commandAndJson);
-
+                if(userTypeVal==1) {
+                    String commandAndJson = "";
+                    String response = "";
                     try {
-                        response = in.readLine();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        double aux = Double.parseDouble((String) aValue);
+                        if (tableData[rowIndex][columnIndex] != null) {
+                            commandAndJson = "grade update ";
+                        } else {
+                            commandAndJson = "grade add ";
+                        }
+                        tableData[rowIndex][columnIndex] = aux;
+                        commandAndJson += "{\"task\":\"" + tableHeader[columnIndex] + "\",\"student\":\"" + tableData[rowIndex][0] + "\",\"grade\":" + aValue + "}";
+                        out.println(commandAndJson);
+
+                        try {
+                            response = in.readLine();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (NumberFormatException e) {
+                        System.err.println("Invalid input! Must be a number!");
+                        JOptionPane.showMessageDialog(null, "Invalid input! Must be a number!");
                     }
-                } catch (NumberFormatException e) {
-                    System.err.println("Invalid input! Must be a number!");
-                    JOptionPane.showMessageDialog(null, "Invalid input! Must be a number!");
                 }
 
             }
@@ -472,7 +474,7 @@ public class MainPage {
         frame.setVisible(true);
     }
 
-    public void showMainPage(Socket socket) {
+    public void showMainPage(Socket socket, int userTypeVal) {
 
         this.socket = socket;
         try {
@@ -490,6 +492,13 @@ public class MainPage {
         }
 
         gson = new Gson();
+        this.userTypeVal = userTypeVal;
+        if(userTypeVal==2)
+        {
+            this.studentPanel.setVisible(false);
+            this.taskPanel.setVisible(false);
+            this.addGroupButton.setVisible(false);
+        }
 
         JFrame mainPageFrame = new JFrame("Main Page");
         this.initFrame(mainPageFrame, this);
