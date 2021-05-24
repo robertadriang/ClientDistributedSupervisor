@@ -132,6 +132,7 @@ public class MainPage {
         for (int i = 0; i < tasks.length; i++)
             tableHeader[i + 1] = tasks[i];
 
+
         Object[][] tableData = new Object[students.length][tableHeader.length];
 
         for (int i = 0; i < students.length; i++)
