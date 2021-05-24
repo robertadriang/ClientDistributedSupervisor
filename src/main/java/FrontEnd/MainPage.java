@@ -56,7 +56,8 @@ public class MainPage {
                         null,
                         ""
                 );
-                addNewStudent(newStudentName);
+                if(!newStudentName.isEmpty())
+                    addNewStudent(newStudentName);
             }
         });
     }
