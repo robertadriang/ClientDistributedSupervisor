@@ -89,6 +89,13 @@ public class Client {
                             commandAndJSON+="{\"name\":\""+request.substring(22)+"\"}";
                         }
                     }
+                    else if(request.startsWith("group-student delete")){
+                        commandAndJSON+="delete ";
+                        var auxSplit=request.split("\"");
+                        String groupName=auxSplit[auxSplit.length-3];
+                        String studentName=auxSplit[auxSplit.length-1];
+                        commandAndJSON+="{\"groupname\":\""+groupName+"\",\"student\":\""+studentName+"\"}";
+                    }
                     out.println(commandAndJSON);
                 }
                 else if (request.startsWith("group-professor")){
