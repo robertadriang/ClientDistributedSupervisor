@@ -1,6 +1,6 @@
 # ClientDistributedSupervisor
 
-This repo hosts the Client from our Distributed Supervisor project. The Client has a graphical interfacem, implemented using Java Swing. 
+This repo hosts the Client from our Distributed Supervisor project. The Client has a graphical interface, implemented using Java Swing. 
 
 ## Login and Register
 
