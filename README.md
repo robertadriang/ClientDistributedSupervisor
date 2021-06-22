@@ -30,7 +30,7 @@ The **Login** page as a whole was designed using a .form GUI, while the behavoir
 
 ## Main Page
 
-The top part of the Main Page is a** JPanel**, named _configPanel_, containing:
+The top part of the Main Page is a **JPanel**, named _configPanel_, containing:
   - _groupComboBox_ - a JComboBox for choosing a group; when a group is selected, createTableData(group) is called, which draws the table coresponding to that group on the screen;
   - _addGroupButton_ - a **JButton** for adding a new group; when this button is pressed, a new dialog window will pop on the screen where the user can write the name of a new group to add to the the _groupComboBox_; also, a request to the **Back-End** is sent for saving the new group;
   - _addStudentButton_ - a **JButton** for adding a new student to the current group; when this button is pressed, a new dialog window will pop on the screen where the user can write the name of the a new **OR** existing student (i.e. a student that already exists in the database, but is not assigned the current group yet); also, a request to the **Back-End** is sent for saving the new student and assigning him/her to the current group; 
